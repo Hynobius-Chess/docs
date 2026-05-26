@@ -20,6 +20,7 @@ nav:
     - Overview: project-overview.md
   - Architectures:
     - 總架構(待拆分): architecture\architecture.md
+    - Project Structure: architecture\project_structure.md
     - Attack: architecture\Attack.md
     - Bit move: architecture\BitMove.md
   - User Guilds:
