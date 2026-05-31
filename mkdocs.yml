@@ -37,6 +37,10 @@ nav:
       - Early Optimization Recode: engine\optimization\engine-improvement.md
       - History Heuristic: engine\optimization\20260503_summary.md
       - Mate In Two Fix + Beta Cut Fix: engine\optimization\20260510_230420_summary.md
+      - v0.3.0-beta.x problems:
+        - main v.s. v0.3.0-alpha.3: engine\optimization\v0.3.0_beta_optimization\20260530_201128_summary.md
+        - main v.s. v0.3.0-beta.2: engine\optimization\v0.3.0_beta_optimization\20260530_235041_summary.md
+        - main v.s. v0.3.0-beta.3: engine\optimization\v0.3.0_beta_optimization\20260531_120254_summary.md
 
 plugins:
   - search
