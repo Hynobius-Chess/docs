@@ -1350,22 +1350,14 @@
 </blockquote>
 <p>Move generator is a critical component of an engine. It is responsible for generating every possible move from a position. This "function" may be called millions or billions of times while the engine is searching.</p>
 <hr />
-<h2 id="application">Application<a class="headerlink" href="#application" title="Permanent link">&para;</a></h2>
-<p>When a chess engine wants to choose a move, it does not only look at the current position. It also looks ahead.</p>
-<p>For example, the engine may ask:</p>
-<ol>
-<li>What moves can I play now?</li>
-<li>After I play one move, what moves can my opponent play?</li>
-<li>After my opponent replies, what moves can I play next?</li>
-<li>Which final positions are good or bad for me?</li>
-</ol>
-<p>To answer these questions, the engine needs the move generator again and again. Search depends on move generation.</p>
-<p>If the move generator is wrong, the whole engine becomes wrong. If it misses a legal move, the engine may never find a winning idea. If it creates an illegal move, the engine may search a position that can never happen in a real game.</p>
-<p>So move generation must be both:</p>
-<ol>
-<li>Correct: every legal move is generated, and no illegal move is generated.</li>
-<li>Fast: it must do this many times per second.</li>
-</ol>
+<h2 id="why-move-generation-must-be-fast">Why Move Generation Must Be Fast<a class="headerlink" href="#why-move-generation-must-be-fast" title="Permanent link">&para;</a></h2>
+<p>A chess engine search grows very quickly.</p>
+<p>If one position has about 35 legal moves, then looking only 1 move ahead gives about 35 positions. Looking 2 moves ahead gives about:</p>
+<p><span class="arithmatex">\(35 \times 35 = 1225\)</span> positions</p>
+<p>Looking 3 moves ahead gives about:</p>
+<p><span class="arithmatex">\(35 \times 35 \times 35 = 42875\)</span> positions</p>
+<p>This number grows exponentially fast.</p>
+<p>Because of this, even a small improvement in move generation speed can make the engine search much more deeply.</p>
 <hr />
 <h2 id="what-is-a-move">What Is a Move?<a class="headerlink" href="#what-is-a-move" title="Permanent link">&para;</a></h2>
 <p>To humans, a move looks simple:</p>
@@ -1383,99 +1375,54 @@
 <p>For example, <code>e7e8q</code> means a pawn moves from <code>e7</code> to <code>e8</code> and promotes to a queen.</p>
 <p>The move generator's job is to create a list of these moves.</p>
 <hr />
-<h2 id="pseudo-legal-moves-and-legal-moves">Pseudo-Legal Moves and Legal Moves<a class="headerlink" href="#pseudo-legal-moves-and-legal-moves" title="Permanent link">&para;</a></h2>
-<p>Many engines split move generation into two steps:</p>
+<h2 id="a-legal-move">A Legal Move<a class="headerlink" href="#a-legal-move" title="Permanent link">&para;</a></h2>
+<p>A legal move must satisfy two conditions:</p>
 <ol>
-<li>Generate pseudo-legal moves.</li>
-<li>Remove moves that are not actually legal.</li>
+<li>The piece must move according to chess rules.</li>
+<li>After the move, our king must not be in check.</li>
 </ol>
-<p>A pseudo-legal move is a move that follows the piece's movement rule, but may still leave the king in check.</p>
-<p>For example, imagine your king is on <code>e1</code>, and an enemy rook is attacking the <code>e</code> file. If you move a pinned piece away, your king may become exposed. The piece itself moved in a normal way, but the move is illegal because your king is left in check.</p>
-<p>So pseudo-legal move generation asks:</p>
-<div class="highlight"><pre><span></span><code>Can this piece move like that?
-</code></pre></div>
-<p>Legal move generation asks:</p>
-<div class="highlight"><pre><span></span><code>After this move, is my king still safe?
-</code></pre></div>
-<p>This difference is very important.</p>
+<p>So, an illegal move may look like this:</p>
+<p><img alt="illegal move" src="../../img/illegal_move.png" /></p>
+<p>We can't promote the pawn, because...</p>
+<p><img alt="divorced" src="../../img/divorced.png" /></p>
+<p>And the pawn is thus called a <strong>"pinned piece"</strong> because it is pinned and it can't move.</p>
 <hr />
-<h2 id="how-each-piece-generates-moves">How Each Piece Generates Moves<a class="headerlink" href="#how-each-piece-generates-moves" title="Permanent link">&para;</a></h2>
-<p>Each type of piece has its own movement rules.</p>
-<h3 id="pawns">Pawns<a class="headerlink" href="#pawns" title="Permanent link">&para;</a></h3>
-<p>Pawns are the most complicated normal piece because they have many special rules.</p>
-<p>A pawn may:</p>
-<ol>
-<li>Move one square forward if the square is empty.</li>
-<li>Move two squares forward from its starting rank if both squares are empty.</li>
-<li>Capture one square diagonally forward.</li>
-<li>Promote when it reaches the last rank.</li>
-<li>Capture en passant in special positions.</li>
-</ol>
-<p>Because pawns move differently for White and Black, the engine must handle the two colors carefully.</p>
-<h3 id="knights">Knights<a class="headerlink" href="#knights" title="Permanent link">&para;</a></h3>
-<p>Knights are easier. A knight jumps in an L shape.</p>
-<p>It can jump over other pieces, so the engine only needs to check the target square:</p>
-<ol>
-<li>If the target square is empty, the knight can move there.</li>
-<li>If the target square has an enemy piece, the knight can capture it.</li>
-<li>If the target square has a friendly piece, the knight cannot move there.</li>
-</ol>
-<h3 id="bishops-rooks-and-queens">Bishops, Rooks, and Queens<a class="headerlink" href="#bishops-rooks-and-queens" title="Permanent link">&para;</a></h3>
-<p>Bishops, rooks, and queens are sliding pieces.</p>
-<p>This means they move in a direction until something blocks them.</p>
-<p>A bishop slides diagonally. A rook slides horizontally and vertically. A queen can slide in all of those directions.</p>
-<p>For each direction, the engine keeps walking square by square:</p>
-<ol>
-<li>If the square is empty, add the move and continue.</li>
-<li>If the square has an enemy piece, add the capture and stop.</li>
-<li>If the square has a friendly piece, stop.</li>
-</ol>
-<h3 id="king">King<a class="headerlink" href="#king" title="Permanent link">&para;</a></h3>
-<p>The king usually moves one square in any direction.</p>
-<p>However, the king is special because it can never move into check. Castling is also handled as a special king move.</p>
-<p>For castling, the engine must check several things:</p>
-<ol>
-<li>The king and rook have not moved before.</li>
-<li>The squares between them are empty.</li>
-<li>The king is not currently in check.</li>
-<li>The king does not pass through check.</li>
-<li>The king does not end in check.</li>
-</ol>
+<h2 id="implementation-1-brute-force-exhaustive-search">Implementation 1: Brute-Force / Exhaustive Search<a class="headerlink" href="#implementation-1-brute-force-exhaustive-search" title="Permanent link">&para;</a></h2>
+<p>How can we produce a "move"? There is a simple idea:</p>
+<blockquote>
+<p>For every piece:
+Try <strong>every destination square</strong>.
+If the piece can move there:</p>
+<blockquote>
+<p>Make the move.
+<strong>Check if our king is safe</strong>.
+If safe, keep the move.
+Undo the move.</p>
+</blockquote>
+</blockquote>
+<p>This implementation is easy to understand, but it is <strong>TOO SLOW</strong>.</p>
+<p>Why? Take a knight for example:</p>
+<p><img alt="knight move" src="../../img/knight_move.png" /></p>
+<p>It can only move to these dark dotted squares.</p>
+<p>So, if we enumerate only these squares, we can reduce from enumerating <span class="arithmatex">\(64\)</span> squares to only <span class="arithmatex">\(8\)</span> squares, thus:</p>
+<div class="arithmatex">\[\frac{8}{64} = 0.125\]</div>
+<p>For a knight move, we can reduce <span class="arithmatex">\(90\%\)</span> of operations, which is much faster.</p>
 <hr />
-<h2 id="why-move-generation-must-be-fast">Why Move Generation Must Be Fast<a class="headerlink" href="#why-move-generation-must-be-fast" title="Permanent link">&para;</a></h2>
-<p>A chess engine search grows very quickly.</p>
-<p>If one position has about 35 legal moves, then looking only 1 move ahead gives about 35 positions. Looking 2 moves ahead gives about:</p>
-<div class="highlight"><pre><span></span><code>35 * 35 = 1225 positions
-</code></pre></div>
-<p>Looking 3 moves ahead gives about:</p>
-<div class="highlight"><pre><span></span><code>35 * 35 * 35 = 42875 positions
-</code></pre></div>
-<p>This number grows extremely fast.</p>
-<p>Because of this, even a small improvement in move generation speed can make the engine search much more deeply.</p>
+<h2 id="implementation-2-pseudo-legal-move-generation">Implementation 2: Pseudo-Legal Move Generation<a class="headerlink" href="#implementation-2-pseudo-legal-move-generation" title="Permanent link">&para;</a></h2>
+<p>By only enumerating possible possible squares a piece can move to, it can reduce a lot of operations and make searching faster.</p>
+<p>However, here comes a problem.</p>
+<blockquote>
+<p>If we <strong>move a pinned piece</strong>, how can the engine know that it is <strong>illegal</strong>?</p>
+</blockquote>
+<p>That's why we introduce the <strong>"pseudo-legal move system"</strong>. A pseudo-legal move means:</p>
+<blockquote>
+<p>A move that <strong>follows the piece movement rules</strong>,but may still <strong>leave the king in attack (check)</strong>.</p>
+</blockquote>
+<p>By <strong>generating pseudo-legal moves</strong> and <strong>filtering</strong> them by making actual moves, this system can be much faster than the brute-force one.</p>
+<p>However, it is still <strong>TOO SLOW</strong> for top engines.</p>
+<p>Why? It is because when making real moves, <strong>it takes time</strong>, and top engines want to remove this waste of time, thus a system called <strong>"Pinned Piece Awareness"</strong> is created.</p>
 <hr />
-<h2 id="a-simple-move-generation-flow">A Simple Move Generation Flow<a class="headerlink" href="#a-simple-move-generation-flow" title="Permanent link">&para;</a></h2>
-<p>A simple engine may generate moves like this:</p>
-<div class="highlight"><pre><span></span><code>generate_moves(position):
-    moves = []
-
-    for each piece of the side to move:
-        generate moves for that piece
-        add them to moves
-
-    legal_moves = []
-
-    for each move in moves:
-        make the move
-        if own king is not in check:
-            add move to legal_moves
-        undo the move
-
-    return legal_moves
-</code></pre></div>
-<p>This is not always the fastest design, but it is easy to understand.</p>
-<p>The important idea is:</p>
-<div class="highlight"><pre><span></span><code>First create possible moves, then keep only the legal ones.
-</code></pre></div>
+<h2 id="implementation-3-pinned-piece-awareness-move-generation">Implementation 3: Pinned Piece Awareness Move Generation<a class="headerlink" href="#implementation-3-pinned-piece-awareness-move-generation" title="Permanent link">&para;</a></h2>
 <hr />
 <h2 id="common-bugs-in-move-generation">Common Bugs in Move Generation<a class="headerlink" href="#common-bugs-in-move-generation" title="Permanent link">&para;</a></h2>
 <p>Move generation is easy to describe, but hard to get perfectly correct.</p>
