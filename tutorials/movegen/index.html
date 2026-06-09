@@ -1057,17 +1057,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#common-bugs-in-move-generation" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Common Bugs in Move Generation
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#perft-testing-move-generation" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1635,13 +1624,14 @@ If safe, keep the move.
 Undo the move.</p>
 </blockquote>
 </blockquote>
+<p><img alt="brute force move generation" src="../../img/brute_force_movegen.png" /></p>
 <p>This implementation is easy to understand, but it is <strong>TOO SLOW</strong>.</p>
 <p>Why? Take a knight for example:</p>
 <p><img alt="knight move" src="../../img/knight_move.png" /></p>
 <p>It can only move to these dark dotted squares.</p>
 <p>So, if we enumerate only these squares, we can reduce from enumerating <span class="arithmatex">\(64\)</span> squares to only <span class="arithmatex">\(8\)</span> squares, thus:</p>
 <div class="arithmatex">\[\frac{8}{64} = 0.125\]</div>
-<p>For a knight move, we can reduce <span class="arithmatex">\(90\%\)</span> of operations, which is much faster.</p>
+<p>For a knight move, we can reduce about <span class="arithmatex">\(90\%\)</span> of operations, which is much faster.</p>
 <hr />
 <h2 id="implementation-2-pseudo-legal-move-generation">Implementation 2: Pseudo-Legal Move Generation<a class="headerlink" href="#implementation-2-pseudo-legal-move-generation" title="Permanent link">&para;</a></h2>
 <p>By only enumerating possible possible squares a piece can move to, it can reduce a lot of operations and make searching faster.</p>
@@ -1654,24 +1644,20 @@ Undo the move.</p>
 <p>A move that <strong>follows the piece movement rules</strong>,but may still <strong>leave the king in attack (check)</strong>.</p>
 </blockquote>
 <p>By <strong>generating pseudo-legal moves</strong> and <strong>filtering</strong> them by making actual moves, this system can be much faster than the brute-force one.</p>
-<p>However, it is still <strong>TOO SLOW</strong> for top engines.</p>
+<p><img alt="filter move generation" src="../../img/filter_movegen.png" /></p>
+<p>However, it is still <strong>TOO SLOW</strong> for top-level engines.</p>
 <p>Why? It is because when making real moves, <strong>it takes time</strong>, and top engines want to remove this waste of time, thus a system called <strong>"Pinned Piece Awareness"</strong> is created.</p>
 <hr />
 <h2 id="implementation-3-pinned-piece-awareness-move-generation">Implementation 3: Pinned Piece Awareness Move Generation<a class="headerlink" href="#implementation-3-pinned-piece-awareness-move-generation" title="Permanent link">&para;</a></h2>
-<hr />
-<h2 id="common-bugs-in-move-generation">Common Bugs in Move Generation<a class="headerlink" href="#common-bugs-in-move-generation" title="Permanent link">&para;</a></h2>
-<p>Move generation is easy to describe, but hard to get perfectly correct.</p>
-<p>Common bugs include:</p>
-<ol>
-<li>Forgetting promotion moves.</li>
-<li>Allowing castling through check.</li>
-<li>Handling en passant incorrectly.</li>
-<li>Forgetting that pinned pieces may not be able to move.</li>
-<li>Generating moves that capture friendly pieces.</li>
-<li>Moving a sliding piece through another piece.</li>
-<li>Forgetting to update castling rights after a king or rook moves.</li>
-</ol>
-<p>These bugs can be hard to see by playing normal games, so engines usually use tests.</p>
+<p>Before generating actual moves, the engine will check for <strong>pinned pieces</strong>. These pieces can't move exactly like others, because they are <strong>restricted to move only along the line of the pin</strong>.</p>
+<p>For example:</p>
+<p><img alt="pinned knight" src="../../img/pinned_knight.png" /></p>
+<p>a pinned knight can't move.</p>
+<p><img alt="pinned bishop" src="../../img/pinned_bishop.png" /></p>
+<p>a pinned bishop can only move diagonally.</p>
+<p><img alt="pinned rook" src="../../img/pinned_rook.png" /></p>
+<p>a pinned rook can only move along the line of the pin.</p>
+<p>Once the engine marked these pinned pieces, it can generate moves only for them, thus reduced time to filter pseudo-legal moves.</p>
 <hr />
 <h2 id="perft-testing-move-generation">Perft: Testing Move Generation<a class="headerlink" href="#perft-testing-move-generation" title="Permanent link">&para;</a></h2>
 <p><code>perft</code> is a common test for move generators.</p>
