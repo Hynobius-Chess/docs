@@ -93,18 +93,27 @@ This is one of the key ideas behind fast chess search.
 
 ---
 
-## A Simple Example
+## Perft
 
-A simple pawn move can be used to show the idea clearly.
+Perft is a method used to test whether move generation and move application are correct.
+It starts from a given position and counts how many legal positions can be reached after a certain depth.
 
-For example:
+Here is a list about how many positions should a correct engine simulate when starting with the stating position (`startpos`).
 
-- A pawn moves from one square to another
-- The engine records the old state
-- The move is applied
-- Later, the engine restores the previous board state
+| Perft Depth | Nodes |
+| --- | --- |
+| 1 | 20 |
+| 2 | 400 |
+| 3 | 8,902 |
+| 4 | 197,281 |
+| 5 | 4,865,609 |
 
-The same idea also works for captures, castling, promotion, and en passant.
+The purpose of Perft is not to evaluate the strength of a position, but to verify the correctness of move generation, the make/undo move system, and special rules.
+
+If an engine produces a Perft result that does not match the expected value at some depth, it usually indicates a bug in areas such as piece movement, captures, castling, en passant, or promotion handling.
+
+For this reason, Perft is often considered one of the most important debugging tools in engine development.
+When implementing new move generation logic or changing move handling, developers often use Perft first to confirm that the basic rules are correct before improving search performance.
 
 ---
 
