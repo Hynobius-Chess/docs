@@ -30,6 +30,7 @@ nav:
       - Perft Test: user-guide\testing\Perft.md
   - Tutorials:
     - Engine Introduction: tutorials\engine_introduce.md
+    - Move Generator: tutorials\movegen.md
     - GitHub Usage: tutorials\gitbub_usage\index.md
   - Engine Development Docs:
     - Code reviews: engine\code-reviews\index.md
@@ -42,6 +43,7 @@ nav:
         - main v.s. v0.3.0-beta.2: engine\optimization\v0.3.0_beta_optimization\20260530_235041_summary.md
         - main v.s. v0.3.0-beta.3: engine\optimization\v0.3.0_beta_optimization\20260531_120254_summary.md
         - v0.3.0-alpha.3 v.s. fix branch: engine\optimization\v0.3.0_beta_optimization\20260601_234551_summary.md
+      - v0.2.11 v.s. v0.3.0-rc.2: engine\optimization\20260606_210549_summary.md
 
 plugins:
   - search
