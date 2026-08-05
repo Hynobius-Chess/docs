@@ -44,6 +44,7 @@ nav:
         - main v.s. v0.3.0-beta.3: engine\optimization\v0.3.0_beta_optimization\20260531_120254_summary.md
         - v0.3.0-alpha.3 v.s. fix branch: engine\optimization\v0.3.0_beta_optimization\20260601_234551_summary.md
       - v0.2.11 v.s. v0.3.0-rc.2: engine\optimization\20260606_210549_summary.md
+      - v0.3.0 v.s. 104-code-review: engine\optimization\20260804_161458_summary.md
 
 plugins:
   - search
