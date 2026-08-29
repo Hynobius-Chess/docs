@@ -59,7 +59,7 @@ Please check out the picture below.
 
 (The picture is from chessprogramming.org)
 
-This is a short example of how alpha-beta search can help cut bad branches. For futher information, please check out [alpha-beta search](\Hynobius\tutorials\alpha_beta_search.md).
+This is a short example of how alpha-beta search can help cut bad branches. For futher information, please check out [search](/tutorials/search).
 
 #### Monte Carlo Tree Search + Neural Networks
 
