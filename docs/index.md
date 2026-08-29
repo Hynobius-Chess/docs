@@ -1,7 +1,25 @@
-# Hynobius Documentation
+---
+# https://vitepress.dev/reference/default-theme-home-page
+layout: home
 
-Hynobius is a C++ chess engine chess engine with **tutorials**, **documents**, **scientifc testing** and **web analysis interface**.
+hero:
+  name: "Hynobius Documentation"
+  text: "A VitePress Site"
+  tagline: My great project tagline
+  actions:
+    - theme: brand
+      text: Markdown Examples
+      link: /markdown-examples
+    - theme: alt
+      text: API Examples
+      link: /api-examples
 
-## Sections
+features:
+  - title: Feature A
+    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Feature B
+    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Feature C
+    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+---
 
-- [Project Overview](project-overview.md)
