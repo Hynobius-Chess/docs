@@ -4,8 +4,8 @@ layout: home
 
 hero:
   name: "Hynobius Documentation"
-  text: "A VitePress Site"
-  tagline: My great project tagline
+  text: "A Chess Engine Guideline"
+  tagline: Guides for chess engine, testing and so on.
   actions:
     - theme: brand
       text: Markdown Examples
@@ -15,11 +15,6 @@ hero:
       link: /api-examples
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
 ---
 
+# Index
